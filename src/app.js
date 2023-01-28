@@ -11,7 +11,7 @@ server.use(cors());
 
 // server.use(productsRouter);
 server.use(router);
- 
+    
 server.listen(5000, () => {console.log("Server running on port 5000")})
 
 // schema e model representam a mesma pasta
