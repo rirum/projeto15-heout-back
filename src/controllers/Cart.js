@@ -1,4 +1,4 @@
-import db from "../config/Database.js";
+import db from "../database/Database.js";
 import { ObjectId } from "mongodb";
 
 export async function postProductCart(req, res) {

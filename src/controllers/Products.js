@@ -1,4 +1,4 @@
-import db from "../config/Database.js";
+import db from "../database/Database.js";
 
 export async function postProducts(req, res) {
   const { name, description, value, pictures } = req.body;

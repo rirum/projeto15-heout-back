@@ -1,5 +1,5 @@
 import * as bcrypt from 'bcrypt';
-import db from "../database.js";
+import db from "../database/Database.js";
 import { User } from "../models/User.js";
 import { validateAuthenticateSchema } from "../validations/authenticateSchema.js";
 import { validateRegisterSchema } from "../validations/registerSchema.js";

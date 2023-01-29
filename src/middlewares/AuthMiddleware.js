@@ -1,5 +1,5 @@
 import dayjs from "dayjs";
-import db from "../database.js";
+import db from "../database/Database.js";
 
 export async function auth (req, res, next) {
   const token = req.headers.authorization?.replace('Bearer ', '');
