@@ -15,10 +15,10 @@ export async function getCart(req, res) {
 
     let cart = await db
       .collection("carts")
-      .findOne({ userId:session.user_id});
+      .findOne({ userId: session.user_id });
 
     if (!cart) {
-      const newCart ={
+      const newCart = {
         userId: session.user_id,
         products: [],
       };
@@ -29,8 +29,7 @@ export async function getCart(req, res) {
     }
 
     res.status(200).send(cart);
-
-    }catch(error){
+  } catch (error) {
     console.log(error);
     return res.status(500).send("error");
   }
@@ -58,10 +57,10 @@ export async function postProductCart(req, res) {
 
     let cart = await db
       .collection("carts")
-      .findOne({ userId:session.user_id});
+      .findOne({ userId: session.user_id });
 
     if (!cart) {
-      const newCart ={
+      const newCart = {
         userId: session.user_id,
         products: [productExists],
       };
@@ -73,13 +72,13 @@ export async function postProductCart(req, res) {
     cartProducts.push(productExists);
 
     await db
-    .collection("carts")
-    .updateOne(
-      {userId: session.user_id},
-      { $set: {products: cartProducts}}
-    );
+      .collection("carts")
+      .updateOne(
+        { userId: session.user_id },
+        { $set: { products: cartProducts } }
+      );
     res.status(201).send(cart);
-    }catch(error){
+  } catch (error) {
     console.log(error);
     return res.status(500).send("error");
   }
@@ -107,7 +106,7 @@ export async function deleteProductsCart(req, res) {
 
     const cart = await db
       .collection("carts")
-      .findOne({ _id: ObjectId(session.userID) });
+      .findOne({ userId: ObjectId(session.user_id) });
 
     if (!cart)
       return res
@@ -115,13 +114,24 @@ export async function deleteProductsCart(req, res) {
         .send("Houve um problema com a validação do usuário!");
 
     const cartProducts = cart.products;
-    const productIndex = cartProducts.indexOf(ObjectId(productID));
-    cartProducts.slice(productIndex, 1);
+    let productIndex = -1;
+
+    cartProducts.map((item, i) => {
+      if (item._id.toString() == productID) {
+        productIndex = { i };
+        return;
+      }
+    });
+    cartProducts.splice({ productIndex }, 1);
 
     await db
       .collection("carts")
-      .updateOne({ _id: ObjectId(session.userID) }, { $set: {products: cartProducts} });
-    res.sendStatus(201);
+      .updateOne(
+        { userId: ObjectId(session.user_id) },
+        { $set: { products: cartProducts } }
+      );
+
+    res.sendStatus(200);
   } catch (error) {
     console.log(error);
     return res.status(500).send("error");
