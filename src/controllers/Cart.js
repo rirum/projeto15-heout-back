@@ -1,6 +1,41 @@
 import db from "../database/Database.js";
 import { ObjectId } from "mongodb";
 
+export async function getCart(req, res) {
+  const { authorization } = req.headers;
+  const token = authorization?.replace("Bearer ", "");
+
+  try {
+    const session = await db.collection("sessions").findOne({ token });
+
+    if (!session)
+      return res
+        .status(404)
+        .send("Usuário fora de uma sessão válida, faça login novamente!");
+
+    let cart = await db
+      .collection("carts")
+      .findOne({ userId:session.user_id});
+
+    if (!cart) {
+      const newCart ={
+        userId: session.user_id,
+        products: [],
+      };
+
+      await db.collection("carts").insertOne(newCart);
+
+      cart = newCart;
+    }
+
+    res.status(200).send(cart);
+
+    }catch(error){
+    console.log(error);
+    return res.status(500).send("error");
+  }
+}
+
 export async function postProductCart(req, res) {
   const { productID } = req.body;
   const { authorization } = req.headers;
@@ -43,8 +78,8 @@ export async function postProductCart(req, res) {
       {userId: session.user_id},
       { $set: {products: cartProducts}}
     );
-    res.sendStatus(201);
-  }catch(error){
+    res.status(201).send(cart);
+    }catch(error){
     console.log(error);
     return res.status(500).send("error");
   }
