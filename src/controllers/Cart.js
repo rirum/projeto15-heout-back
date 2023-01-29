@@ -1,4 +1,5 @@
 import db from "../config/Database.js";
+import { ObjectId } from "mongodb";
 
 export async function postProductCart(req, res) {
   const { productID } = req.body;
@@ -20,23 +21,30 @@ export async function postProductCart(req, res) {
         .status(404)
         .send("Usuário fora de uma sessão válida, faça login novamente!");
 
-    const cart = await db
+    let cart = await db
       .collection("carts")
-      .findOne({ _id: ObjectId(session.userID) });
+      .findOne({ userId:session.user_id});
 
-    if (!cart)
-      return res
-        .status(404)
-        .send("Houve um problema com a validação do usuário!");
+    if (!cart) {
+      const newCart ={
+        userId: session.user_id,
+        products: [productExists],
+      };
+      await db.collection("carts").insertOne(newCart);
+      cart = newCart;
+    }
 
     const cartProducts = cart.products;
-    cartProducts.push(productID);
+    cartProducts.push(productExists);
 
     await db
-      .collection("carts")
-      .updateOne({ _id: ObjectId(session.userID) }, { $set: {products: cartProducts} });
+    .collection("carts")
+    .updateOne(
+      {userId: session.user_id},
+      { $set: {products: cartProducts}}
+    );
     res.sendStatus(201);
-  } catch (error) {
+  }catch(error){
     console.log(error);
     return res.status(500).send("error");
   }
