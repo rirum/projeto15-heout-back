@@ -118,11 +118,11 @@ export async function deleteProductsCart(req, res) {
 
     cartProducts.map((item, i) => {
       if (item._id.toString() == productID) {
-        productIndex =  i ;
+        productIndex = i;
         return;
       }
     });
-    cartProducts.splice(productIndex , 1);
+    cartProducts.splice(productIndex, 1);
 
     await db
       .collection("carts")

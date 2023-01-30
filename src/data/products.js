@@ -24,11 +24,6 @@ const products = [
     "value": "47.90",
     "pictures":["https://www.encurtador.com.br/nqIZ4","https://www.encurtador.com.br/celFJ","https://www.encurtador.com.br/celFJ"]
     },
-    {"name": "Conjunto infantil feminino",
-    "description": "Conjunto body, saia, infantil, vermelho e branco, tecido algodão, tamanho RN",
-    "value": "87.90",
-    "pictures":["https://www.shre.ink/c0l8","https://www.shre.ink/c0lI","https://www.shre.ink/c0ld"]
-    },
     {"name": "Camisa infantil masculina",
     "description": "Camisa infantil masculina, estampa Ás, tecido algodão, tamanho M",
     "value": "37.98",
