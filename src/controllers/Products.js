@@ -1,16 +1,16 @@
 import db from "../database/Database.js";
+import products from "../data/products.js";
 
 export async function postProducts(req, res) {
   const { name, description, value, pictures } = req.body;
-  const newProduct = {
-    name,
-    description,
-    value,
-    pictures,
-  };
 
   try {
-    await db.collection("products").insertOne({ newProduct });
+    await db.collection("products").insertOne({
+      name,
+      description,
+      value,
+      pictures,
+    });
     res.sendStatus(201);
   } catch (error) {
     console.log(error);
@@ -24,7 +24,10 @@ export async function getProducts(req, res) {
 
     let productData = [];
     productData = await db.collection("products").find().toArray();
-    return res.status(200).send(productData);
+    if (productData.length === 0 || !productData)
+      await db.collection("products").insertMany(products);
+    productData = await db.collection("products").find().toArray();
+    res.status(200).send(productData);
   } catch (error) {
     return res.status(500).send("error");
   }
