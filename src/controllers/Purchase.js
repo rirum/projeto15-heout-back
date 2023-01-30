@@ -29,6 +29,8 @@ export async function postPurchase(req, res) {
       total += Number(product.newProduct.value);
     });
 
+    total = total.toFixed(2);
+
     await db.collection("purchase").insertOne({
       userId: session.user_id,
       cardNumber,
@@ -40,9 +42,17 @@ export async function postPurchase(req, res) {
 
     const purch = await db
       .collection("purchase")
-      .findOne({ userId: ObjectId(session.user_id) });
+      .find({ userId: ObjectId(session.user_id) }).toArray();
 
-    res.status(201).send(purch);
+    await db
+      .collection("carts")
+      .updateOne(
+        { userId: ObjectId(session.user_id) },
+        { $set: { products: []} }
+      );
+
+    res.status(200).send(purch[purch.length-1]);
+
   } catch (error) {
     console.log(error);
     return res.status(500).send(error);
